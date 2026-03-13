@@ -123,6 +123,15 @@ def loss_fn(
     return pde_loss + BC_LOSS_WEIGHT * bc_loss
 
 
+# TODO: Interpolation function to map from sample points to collocation points
+
+
+# TODO: PDE residual function for heterogeneous coefficient case
+
+
+# TODO: Loss function for heterogeneous coefficient case
+
+
 def generate_collocation_points(n_points: int, key: jr.PRNGKey) -> jnp.ndarray:
     """
     Generate interior collocation points using Latin Hypercube sampling.
@@ -266,6 +275,9 @@ def main():
     plt.show()
 
     return network
+
+
+# TODO: Main function for heterogeneous coefficient case
 
 
 if __name__ == "__main__":
