@@ -1,5 +1,4 @@
-# NVIDIA GPU (CUDA 12) setup for JAX
-jax[cuda12]>=0.9.1
+jax>=0.9.1
 equinox>=0.10.0
 numpy>=1.20
 optax>=0.1.0
