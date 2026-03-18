@@ -9,10 +9,6 @@ laplacian(u) = exp(xy) * (x^2 + y^2), so
 f(x, y) = -exp(xy) * (x^2 + y^2).
 """
 
-import os
-os.environ.pop("CUDA_VISIBLE_DEVICES", None)     # unset if a previous session forced CPU
-os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"  # don't grab all GPU memory upfront
-
 import jax
 import jax.numpy as jnp
 import jax.random as jr
