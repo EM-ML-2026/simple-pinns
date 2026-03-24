@@ -22,18 +22,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## GPU note
-
-requirements.txt includes CUDA-enabled JAX (jax[cuda12]).
-If an NVIDIA GPU and compatible driver are available, JAX will use GPU automatically.
-Otherwise, it falls back to CPU.
-
-Check backend:
-
-```bash
-python -c "import jax; print(jax.devices()); print(jax.default_backend())"
-```
-
 ## Run scripts
 
 ```bash
