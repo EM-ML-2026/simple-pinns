@@ -11,10 +11,9 @@ Minimal PINN examples for:
 From the project root:
 
 ```bash
-cd /home/hcheng/EM_ML_2026/PINNS
+cd simple_pinns
 python3 -m venv venv
 source venv/bin/activate
-python -m pip install --upgrade pip
 ```
 
 ## Install dependencies
