@@ -11,7 +11,7 @@ Minimal PINN examples for:
 From the project root:
 
 ```bash
-cd simple_pinns
+cd simple-pinns
 python3 -m venv venv
 source venv/bin/activate
 ```
