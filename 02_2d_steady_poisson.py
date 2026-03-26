@@ -76,7 +76,8 @@ def rhs_function(x: jnp.ndarray, y: jnp.ndarray) -> jnp.ndarray:
 
         f(x,y) = -exp(x*y) * (x^2 + y^2)
     """
-    return -jnp.exp(x * y) * (x**2 + y**2)
+    # return -jnp.exp(x * y) * (x**2 + y**2)
+    return jnp.where((x>0.4) & (x<0.6) & (y>0.4) & (y<0.6), 1.0, 0.0)
 
 
 def pde_residual(network: eqx.Module, xy: jnp.ndarray) -> jnp.ndarray:
@@ -117,8 +118,20 @@ def loss_fn(
     residuals = jax.vmap(lambda xy: pde_residual(network, xy))(xy_collocation)
     pde_loss = 0.5 * jnp.mean(residuals**2)
 
-    boundary_pred = jax.vmap(lambda xy: jnp.squeeze(network(xy)))(xy_boundary)
-    bc_loss = 0.5 * jnp.mean((boundary_pred - u_boundary) ** 2)
+    n_per_side = xy_boundary.shape[0] // 4
+    xy_boundary_top = xy_boundary[3 * n_per_side :]
+    xy_boundary_non_top = xy_boundary[: 3 * n_per_side]
+    u_boundary_non_top = u_boundary[: 3 * n_per_side]
+
+    def u_func(z):
+        return jnp.squeeze(network(z))
+
+    boundary_grad_top = jax.vmap(jax.grad(u_func))(xy_boundary_top)
+    boundary_pred_top = boundary_grad_top[:, 1]
+    bc_loss_top = 0.5 * jnp.mean((boundary_pred_top - (-0.1)) ** 2)
+
+    boundary_pred = jax.vmap(lambda xy: jnp.squeeze(network(xy)))(xy_boundary_non_top)
+    bc_loss = bc_loss_top + 0.5 * jnp.mean((boundary_pred - u_boundary_non_top) ** 2)
 
     return pde_loss + BC_LOSS_WEIGHT * bc_loss
 
@@ -160,7 +173,11 @@ def generate_boundary_points(n_points_total: int) -> Tuple[jnp.ndarray, jnp.ndar
 
     xy_boundary = jnp.vstack([left, right, bottom, top])
 
-    u_boundary = jax.vmap(lambda xy: analytical_solution(xy[0], xy[1]))(xy_boundary)
+    # u_boundary = jax.vmap(lambda xy: analytical_solution(xy[0], xy[1]))(xy_boundary)
+    
+    u_boundary = jnp.zeros(xy_boundary.shape[0])
+
+    u_boundary = u_boundary.at[3 * n_per_side :].set(-0.1)
 
     return xy_boundary, u_boundary
 
